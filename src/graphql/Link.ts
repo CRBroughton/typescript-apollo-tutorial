@@ -1,5 +1,4 @@
 import { extendType, nonNull, objectType, stringArg } from 'nexus'
-import { context } from '../context'
 
 export const Link = objectType({
   name: 'Link',
@@ -7,6 +6,14 @@ export const Link = objectType({
     t.nonNull.int('id')
     t.nullable.string('description')
     t.nonNull.string('url')
+    t.field('postedBy', { // 1
+      type: 'User',
+      resolve(parent, _args, context) { // 2
+        return context.prisma.link
+          .findUnique({ where: { id: parent.id } })
+          .postedBy()
+      },
+    })
   },
 })
 
@@ -22,7 +29,7 @@ export const LinkQuery = extendType({
   definition(t) {
     t.nonNull.list.nonNull.field('feed', {
       type: 'Link',
-      resolve() {
+      resolve(_parent, args, context) {
         return context.prisma.link.findMany()
       },
     })
@@ -39,13 +46,22 @@ export const LinkMutation = extendType({
         url: nonNull(stringArg()),
       },
 
-      resolve(_parent, args) {
+      resolve(_parent, args, context) {
+        const { description, url } = args
+        const { userId } = context
+
+        if (!userId) { // 1
+          throw new Error('Cannot post without logging in.')
+        }
+
         const newLink = context.prisma.link.create({
           data: {
-            description: args.description,
-            url: args.url,
+            description,
+            url,
+            postedBy: { connect: { id: userId } }, // 2
           },
         })
+
         return newLink
       },
     })
