@@ -1,4 +1,4 @@
-import { extendType, nonNull, objectType, stringArg } from 'nexus'
+import { extendType, intArg, nonNull, objectType, stringArg } from 'nexus'
 
 export const Link = objectType({
   name: 'Link',
@@ -85,23 +85,33 @@ export const LinkMutation = extendType({
 //   },
 // })
 
-// export const updateLink = extendType({
-//   type: 'Mutation',
-//   definition(t) {
-//     t.nonNull.field('updateLink', {
-//       type: 'Link',
-//       args: {
-//         id: nonNull(intArg()),
-//         url: nonNull(stringArg()),
-//       },
-//       resolve(_parent, args) {
-//         const { id, url } = args
-//         for (const link of links) {
-//           if (link.id === id)
-//             link.url = url
-//         }
-//         return args
-//       },
-//     })
-//   },
-// })
+export const updateLink = extendType({
+  type: 'Mutation',
+  definition(t) {
+    t.nonNull.field('updateLink', {
+      type: 'Link',
+      args: {
+        id: nonNull(intArg()),
+        url: nonNull(stringArg()),
+      },
+      async resolve(_parent, args, context) {
+        const { id, url } = args
+        const updateLink = await context.prisma.link.update({
+          where: {
+            id,
+          },
+          data: {
+            url,
+          },
+        })
+        return updateLink
+        // const { id, url } = args
+        // for (const link of links) {
+        //   if (link.id === id)
+        //     link.url = url
+        // }
+        // return args
+      },
+    })
+  },
+})
