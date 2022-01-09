@@ -1,6 +1,6 @@
 import { PrismaClient } from '@prisma/client'
 import type { Request } from 'express'
-import { AuthTokenPayload, decodeAuthHeader } from './utils/auth'
+import { decodeAuthHeader } from './utils/auth'
 
 export const prisma = new PrismaClient()
 
