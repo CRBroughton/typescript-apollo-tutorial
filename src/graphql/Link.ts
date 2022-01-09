@@ -68,22 +68,28 @@ export const LinkMutation = extendType({
   },
 })
 
-// export const deleteLink = extendType({
-//   type: 'Mutation',
-//   definition(t) {
-//     t.nonNull.field('deleteLink', {
-//       type: 'ID',
-//       args: {
-//         id: nonNull(intArg()),
-//       },
+export const deleteLink = extendType({
+  type: 'Mutation',
+  definition(t) {
+    t.nonNull.field('deleteLink', {
+      type: 'ID',
+      args: {
+        id: nonNull(intArg()),
+      },
 
-//       resolve(_parent, args) {
-//         links = links.filter(link => link.id !== args.id)
-//         return `deleted post ${args.id}`
-//       },
-//     })
-//   },
-// })
+      async resolve(_parent, args, context) {
+        await context.prisma.link.delete({
+          where: {
+            id: args.id,
+          },
+        })
+        return `deleted post ${args.id}`
+        // links = links.filter(link => link.id !== args.id)
+        // return `deleted post ${args.id}`
+      },
+    })
+  },
+})
 
 export const updateLink = extendType({
   type: 'Mutation',
