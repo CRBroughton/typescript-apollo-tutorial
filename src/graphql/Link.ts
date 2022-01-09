@@ -1,5 +1,4 @@
 import { extendType, nonNull, objectType, stringArg } from 'nexus'
-import { context } from '../context'
 
 export const Link = objectType({
   name: 'Link',
@@ -30,7 +29,7 @@ export const LinkQuery = extendType({
   definition(t) {
     t.nonNull.list.nonNull.field('feed', {
       type: 'Link',
-      resolve() {
+      resolve(_parent, args, context) {
         return context.prisma.link.findMany()
       },
     })
@@ -47,7 +46,7 @@ export const LinkMutation = extendType({
         url: nonNull(stringArg()),
       },
 
-      resolve(_parent, args) {
+      resolve(_parent, args, context) {
         const { description, url } = args
         const { userId } = context
 
