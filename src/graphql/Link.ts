@@ -1,4 +1,4 @@
-import { extendType, intArg, nonNull, objectType, stringArg } from 'nexus'
+import { extendType, nonNull, objectType, stringArg } from 'nexus'
 import { context } from '../context'
 
 export const Link = objectType({
