@@ -23,3 +23,9 @@ To run Prisma Studio:
 ```
 npx prisma studio
 ```
+
+If .env variables aren't working:
+
+```
+npx prisma generate
+```
