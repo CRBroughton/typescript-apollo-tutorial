@@ -1,4 +1,4 @@
-import { extendType, intArg, nonNull, objectType } from 'nexus'
+import { extendType, nonNull, objectType, stringArg } from 'nexus'
 import type { User } from '@prisma/client'
 
 export const Vote = objectType({ // 1
@@ -15,7 +15,7 @@ export const VoteMutation = extendType({ // 2
     t.field('vote', {
       type: 'Vote',
       args: {
-        linkId: nonNull(intArg()),
+        linkId: nonNull(stringArg()),
       },
       async resolve(_parent, args, context) {
         const { userId } = context

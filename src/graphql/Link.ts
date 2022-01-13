@@ -1,9 +1,9 @@
-import { extendType, intArg, nonNull, objectType, stringArg } from 'nexus'
+import { extendType, nonNull, objectType, stringArg } from 'nexus'
 
 export const Link = objectType({
   name: 'Link',
   definition(t) {
-    t.nonNull.int('id')
+    t.nonNull.string('id')
     t.nullable.string('description')
     t.nonNull.string('url')
     t.field('postedBy', { // 1
@@ -28,7 +28,7 @@ export const Link = objectType({
 export const ID = objectType({
   name: 'ID',
   definition(t) {
-    t.nonNull.int('id')
+    t.nonNull.string('id')
   },
 })
 
@@ -82,7 +82,7 @@ export const deleteLink = extendType({
     t.nonNull.field('deleteLink', {
       type: 'ID',
       args: {
-        id: nonNull(intArg()),
+        id: nonNull(stringArg()),
       },
 
       async resolve(_parent, args, context) {
@@ -105,7 +105,7 @@ export const updateLink = extendType({
     t.nonNull.field('updateLink', {
       type: 'Link',
       args: {
-        id: nonNull(intArg()),
+        id: nonNull(stringArg()),
         url: nonNull(stringArg()),
       },
       async resolve(_parent, args, context) {
