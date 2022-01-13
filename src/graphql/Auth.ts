@@ -23,9 +23,9 @@ export const AuthMutation = extendType({
         password: nonNull(stringArg()),
       },
       async resolve(_parent, args, context) {
-        // 1
+        const email = args.email.toLowerCase()
         const user = await context.prisma.user.findUnique({
-          where: { email: args.email },
+          where: { email },
         })
         if (!user)
           throw new Error('No such user found')
@@ -57,9 +57,22 @@ export const AuthMutation = extendType({
         name: nonNull(stringArg()),
       },
       async resolve(_parent, args, context) {
-        const { email, name } = args
         // 2
         const password = await bcrypt.hash(args.password, 10)
+
+        const email = args.email.toLowerCase()
+        const name = args.name.toLowerCase()
+
+        const existingUser = await context.prisma.user.findUnique({
+          where: { email },
+        })
+
+        const existingUserName = await context.prisma.user.findUnique({
+          where: { name },
+        })
+
+        if (existingUser || existingUserName)
+          throw new Error('Account already created')
 
         // 3
         const user = await context.prisma.user.create({
